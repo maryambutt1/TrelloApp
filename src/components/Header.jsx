@@ -3,18 +3,18 @@ import { ChevronDown, Trello, User, HelpCircle, Bell } from "react-feather";
 
 export default function Header() {
   return (
-    <div className="bg-[#af1e66] w-100 h-12 p-3 border-b bordered-box flex flex-row justify-between border-b-pink-900">
+    <div className="bg-gray-800 w-100 h-12 p-3 border-b bordered-box flex flex-row justify-between border-b-gray-900">
       {" "}
       <div className="left justify-center items-center flex gap-x-2">
         <Trello size={20}></Trello>
         <h3 className="text-white text-lg ">Trello</h3>
         <div className="flex ml-6 mt-1 gap-x-3 ">
-          <div className="flex gap-x-2 hover:bg-pink-900 cursor-pointer">
+          <div className="flex gap-x-2 hover:bg-gray-700 cursor-pointer">
             {" "}
             <h4 className="text-white text-md">Workspaces</h4>
             <ChevronDown size={20}></ChevronDown>
           </div>
-          <div className="flex gap-x-2 hover:bg-pink-900 cursor-pointer">
+          <div className="flex gap-x-2 hover:bg-gray-700 cursor-pointer">
             <h4 className="text-white text-md">More</h4>
             <ChevronDown size={20}></ChevronDown>
           </div>
