@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ChevronRight, ChevronLeft, Plus, X } from "react-feather";
 import { Popover } from "react-tiny-popover";
+import { BoardContext } from "../context/BoardContext";
+import { useContext } from "react";
 
 const Sidebar = () => {
   const blankBoard = {
@@ -12,7 +14,20 @@ const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [showpop, setShowpop] = useState(false);
   const [boardData, setBoarddata] = useState(blankBoard);
+  const { allBoard, setAllBoard } = useContext(BoardContext);
 
+  const setActiveboard = (i) => {
+    let newBoard = { ...allBoard };
+    newBoard.active = i;
+    setAllBoard(newBoard);
+  };
+  const addBoard = () => {
+    let newBoard = {...allBoard};
+    newBoard.boards.push(boardData);
+    setAllBoard(newBoard);
+    setBoarddata(blankBoard);
+    setShowpop(!showpop);
+}
   return (
     <div
       className={`bg-gray-800 h-[calc(100vh-3rem)] border-r-[#d6486c29] transition-all linear duration-500 flex-shrink-0 ${
@@ -81,7 +96,7 @@ const Sidebar = () => {
                         className="mb-2 h-8 px-2 w-full bg-gray-400 rounded-sm"
                       />
                       <button
-                        onClick={() => {}}
+                        onClick={() => addBoard()}
                         className="w-full rounded h-8 bg-blue-700 mt-2 hover:bg-blue-600"
                       >
                         Create
@@ -99,6 +114,27 @@ const Sidebar = () => {
               </Popover>
             </div>
           </div>
+          <ul>
+            {allBoard?.boards &&
+              allBoard?.boards?.map((x, i) => {
+                return (
+                  <li key={i}>
+                    <button
+                      onClick={() => setActiveboard(i)}
+                      className="px-3 py-2 w-full text-sm flex justify-start align-baseline hover:bg-gray-500"
+                    >
+                      <span
+                        className="w-6 h-max rounded-sm mr-2"
+                        style={{ backgroundColor: `${x.bgcolor}` }}
+                      >
+                        &nbsp;
+                      </span>
+                      <span>{x.name}</span>
+                    </button>
+                  </li>
+                );
+              })}
+          </ul>
         </div>
       )}
     </div>
