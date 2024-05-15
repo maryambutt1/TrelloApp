@@ -10,6 +10,7 @@ import {
 import { BoardContext } from "../context/BoardContext";
 import AddCard from "./AddCard";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import AddList from "./AddList";
 
 export default function Main() {
   const { allBoard, setAllBoard } = useContext(BoardContext);
@@ -18,6 +19,15 @@ export default function Main() {
   const getCard = (card,index) => {
     let newBoardList = [...boardData.list];
     newBoardList[index].items.push({id:'abc',title:card});
+    let board={...allBoard};
+    board.boards[board.active].list=newBoardList;
+    setAllBoard(board);
+
+  };
+
+  const getList = (list) => {
+    let newBoardList = [...boardData.list];
+    newBoardList.push({id:newBoardList.length+1+'',title:list,items:[]});
     let board={...allBoard};
     board.boards[board.active].list=newBoardList;
     setAllBoard(board);
@@ -74,7 +84,7 @@ export default function Main() {
                 return (
                   <div
                     key={i}
-                    className="w-60 h-fit rounded-md p-2 bg-gray-200 flex-shrink-0"
+                    className="w-60 h-fit rounded-md p-2 bg-gray-300 flex-shrink-0"
                   >
                     <div className="list-body">
                       <div className="text-black flex justify-between p-1 items-center">
@@ -134,6 +144,7 @@ export default function Main() {
                 );
               })}
           </DragDropContext>
+           <AddList getList={(list) => getList(list)} />
         </div>
       </div>
     </div>

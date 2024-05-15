@@ -9,12 +9,12 @@ export default function Header() {
         <Trello size={20}></Trello>
         <h3 className="text-white text-lg ">Trello</h3>
         <div className="flex ml-6 mt-1 gap-x-3 ">
-          <div className="flex gap-x-2 hover:bg-gray-700 cursor-pointer">
+          <div className="flex gap-x-2 hover:bg-gray-700 ">
             {" "}
             <h4 className="text-white text-md">Workspaces</h4>
             <ChevronDown size={20}></ChevronDown>
           </div>
-          <div className="flex gap-x-2 hover:bg-gray-700 cursor-pointer">
+          <div className="flex gap-x-2 hover:bg-gray-700">
             <h4 className="text-white text-md">More</h4>
             <ChevronDown size={20}></ChevronDown>
           </div>
