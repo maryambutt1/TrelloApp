@@ -24,8 +24,8 @@ function App() {
   const [allBoard,setAllBoard]=useState(boardData)
   return (
     <>
+    <BoardContext.Provider value={{allBoard,setAllBoard}}>
       <Header />
-      <BoardContext.Provider value={{allBoard,setAllBoard}}>
       <div className="content flex">
         <Sidebar />
         <Main />

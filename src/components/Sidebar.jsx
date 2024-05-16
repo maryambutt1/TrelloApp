@@ -7,7 +7,7 @@ import { useContext } from "react";
 const Sidebar = () => {
   const blankBoard = {
     name: "",
-    bgcolor: "#FFFFFF",
+    bgcolor: "#FF0000",
     list: [],
   };
 
@@ -15,6 +15,7 @@ const Sidebar = () => {
   const [showpop, setShowpop] = useState(false);
   const [boardData, setBoarddata] = useState(blankBoard);
   const { allBoard, setAllBoard } = useContext(BoardContext);
+  const bData = allBoard.boards[allBoard.active];
 
   const setActiveboard = (i) => {
     let newBoard = { ...allBoard };
@@ -30,9 +31,10 @@ const Sidebar = () => {
 }
   return (
     <div
-      className={`bg-gray-800 h-[calc(100vh-3rem)] border-r-[#d6486c29] transition-all linear duration-500 flex-shrink-0 ${
+      className={`h-[calc(100vh-3rem)] border border-gray-300 transition-all linear duration-500 flex-shrink-0 ${
         collapsed ? "w-[45px]" : "w-[280px]"
       }`}
+      style={{ backgroundColor: `${bData.bgcolor}` }}
     >
       {collapsed && (
         <div className="p-2">
@@ -46,7 +48,7 @@ const Sidebar = () => {
       )}
       {!collapsed && (
         <div>
-          <div className="workspace p-4 flex justify-between border-b border-b-[#7e2d3829] text-white">
+          <div className="workspace p-4 flex justify-between border-b border-b-gray-300 text-white">
             <h4>Trello's Workspace</h4>
             <button
               onClick={() => setCollapsed(!collapsed)}
@@ -117,14 +119,17 @@ const Sidebar = () => {
           <ul>
             {allBoard?.boards &&
               allBoard?.boards?.map((x, i) => {
+                const isActive = allBoard.active === i; // Check if the current board is active
                 return (
                   <li key={i}>
                     <button
                       onClick={() => setActiveboard(i)}
-                      className="px-3 py-2 w-full text-sm flex justify-start align-baseline hover:bg-gray-500"
+                      className={`px-3 py-2 w-full text-sm flex justify-start align-baseline bg-opacity-40 hover:bg-gray-700 ${
+                        isActive ? "bg-gray-700 text-white" : ""
+                      }`}
                     >
                       <span
-                        className="w-6 h-max rounded-sm mr-2"
+                        className="w-6 h-max rounded-sm mr-2 border"
                         style={{ backgroundColor: `${x.bgcolor}` }}
                       >
                         &nbsp;

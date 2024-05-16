@@ -57,7 +57,7 @@ export default function AddList(props) {
             className="flex items-center gap-x-2 hover:bg-gray-400 p-1 rounded w-full h-8 text-black cursor-pointer "
           >
             <Plus size={18}></Plus>
-            Add another list
+            Add a list
           </button>
         )}
       </div>

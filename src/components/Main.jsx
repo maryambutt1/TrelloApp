@@ -11,45 +11,57 @@ import { BoardContext } from "../context/BoardContext";
 import AddCard from "./AddCard";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import AddList from "./AddList";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Main() {
   const { allBoard, setAllBoard } = useContext(BoardContext);
   const boardData = allBoard.boards[allBoard.active];
 
-  const getCard = (card,index) => {
+  const getCard = (card, index) => {
+    const uniqueId = uuidv4();
     let newBoardList = [...boardData.list];
-    newBoardList[index].items.push({id:'abc',title:card});
-    let board={...allBoard};
-    board.boards[board.active].list=newBoardList;
+    newBoardList[index].items.push({ id: uniqueId, title: card });
+    let board = { ...allBoard };
+    board.boards[board.active].list = newBoardList;
     setAllBoard(board);
-
   };
 
   const getList = (list) => {
     let newBoardList = [...boardData.list];
-    newBoardList.push({id:newBoardList.length+1+'',title:list,items:[]});
-    let board={...allBoard};
-    board.boards[board.active].list=newBoardList;
+    newBoardList.push({
+      id: newBoardList.length + 1 + "",
+      title: list,
+      items: [],
+    });
+    let board = { ...allBoard };
+    board.boards[board.active].list = newBoardList;
     setAllBoard(board);
-
   };
 
-  function onDragEnd(result){
-    if(!result.destination){
-        console.log("No Destination");
-        return;
+  function onDragEnd(result) {
+    if (!result.destination) {
+      console.log("No Destination");
+      return;
     }
-    const newList = [...boardData.list];
+    const newList = [...allBoard.boards[allBoard.active].list];
     const sourceId = parseInt(result.source.droppableId);
     const destinationId = parseInt(result.destination.droppableId);
-    const [removed] = newList[sourceId - 1].items.splice(result.source.index,1);
-    newList[destinationId - 1].items.splice(result.destination.index,0,removed);
-
-    let board = {...allBoard};
-    board.boards[board.active].list = newList;
-    setAllBoard(board);
-}
-
+    const [removed] = newList[sourceId - 1].items.splice(
+      result.source.index,
+      1
+    );
+    newList[destinationId - 1].items.splice(
+      result.destination.index,
+      0,
+      removed
+    );
+    console.log("source", sourceId);
+    console.log("dest", destinationId);
+    let updatedBoard = { ...allBoard };
+    updatedBoard.boards[updatedBoard.active].list = newList; 
+    setAllBoard(updatedBoard);
+    console.log("allboard", allBoard);
+  }
 
   const buttons = [
     { name: "Power-ups", icon: <TrendingUp size={16} className="mr-2" /> },
@@ -59,8 +71,14 @@ export default function Main() {
   ];
 
   return (
-    <div className="flex flex-col w-full" style={{backgroundColor:`${boardData.bgcolor}`}}>
-      <div className="text-white p-3 flex justify-between border border-gray-900 bg-gray-800 items-center ">
+    <div
+      className="flex flex-col w-full"
+      style={{ backgroundColor: `${boardData.bgcolor}` }}
+    >
+      <div
+        className="text-white p-3 flex justify-between border border-gray-300 bg-gray-800 items-center "
+        style={{ backgroundColor: `${boardData.bgcolor}` }}
+      >
         <h2 className="text-lg">
           {" "}
           <b>{boardData.name}</b>
@@ -77,7 +95,7 @@ export default function Main() {
         </div>
       </div>
       <div className="flex flex-col w-full flex-grow relative">
-        <div className="absolute mb-1 pb-2 left-0 right-0 top-0 bottom-0 p-3 flex overflow-x-scroll overflow-y-hidden gap-x-3">
+        <div className="absolute mb-1 pb-2 left-0 right-0 top-0 bottom-0 p-3 flex overflow-x-scroll gap-x-3">
           <DragDropContext onDragEnd={onDragEnd}>
             {boardData?.list &&
               boardData.list.map((x, i) => {
@@ -136,15 +154,14 @@ export default function Main() {
                           </div>
                         )}
                       </Droppable>
-                     
-                        <AddCard getCard={(card) => getCard(card, i)} />
-                     
+
+                      <AddCard getCard={(card) => getCard(card, i)} />
                     </div>
                   </div>
                 );
               })}
           </DragDropContext>
-           <AddList getList={(list) => getList(list)} />
+          <AddList getList={(list) => getList(list)} />
         </div>
       </div>
     </div>

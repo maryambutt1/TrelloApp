@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ChevronDown, Trello, User, HelpCircle, Bell } from "react-feather";
+import { BoardContext } from "../context/BoardContext";
 
 export default function Header() {
+  const { allBoard } = useContext(BoardContext);
+  const boardData = allBoard.boards[allBoard.active];
+  
   return (
-    <div className="bg-gray-800 w-100 h-12 p-3 border-b bordered-box flex flex-row justify-between border-b-gray-900">
+    <div className="w-100 h-12 p-3 flex flex-row justify-between border-b-gray-300" style={{backgroundColor:`${boardData.bgcolor}`}}>
       {" "}
       <div className="left justify-center items-center flex gap-x-2">
         <Trello size={20}></Trello>
