@@ -32,5 +32,13 @@ export const createCard = async (cardData) => {
     throw error;
   }
 };
-
+export const fetchBoards = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/boards`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting boards:', error);
+    throw error;
+  }
+};
 
