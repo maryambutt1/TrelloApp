@@ -3,6 +3,7 @@ import { ChevronRight, ChevronLeft, Plus, X } from "react-feather";
 import { Popover } from "react-tiny-popover";
 import { BoardContext } from "../context/BoardContext";
 import { useContext } from "react";
+import { createBoard } from "../services/api";
 
 const Sidebar = () => {
   const blankBoard = {
@@ -22,13 +23,36 @@ const Sidebar = () => {
     newBoard.active = i;
     setAllBoard(newBoard);
   };
-  const addBoard = () => {
-    let newBoard = {...allBoard};
-    newBoard.boards.push(boardData);
-    setAllBoard(newBoard);
-    setBoarddata(blankBoard);
-    setShowpop(!showpop);
-}
+  const addBoard = async () => {
+    try {
+      console.log('Adding board...');
+      const createdBoard = await createBoard(boardData);
+      console.log('Created board:', createdBoard);
+      setAllBoard(prev => {
+        console.log('Previous allBoard:', prev);
+  
+        const updatedBoards = [...prev.boards, {
+          name: createdBoard.name,
+          bgcolor: createdBoard.bgcolor,
+          list: [],
+          _id: createdBoard._id,
+        }];
+  
+        const updatedAllBoard = {
+          ...prev,
+          boards: updatedBoards,
+        };
+  
+        console.log('Updated allBoard:', updatedAllBoard);
+        return updatedAllBoard;
+      });
+      setBoarddata(blankBoard);
+      setShowpop(false);
+    } catch (error) {
+      console.error('Error creating board:', error);
+    }
+  };
+  
   return (
     <div
       className={`h-[calc(100vh-3rem)] border border-gray-300 transition-all linear duration-500 flex-shrink-0 ${
