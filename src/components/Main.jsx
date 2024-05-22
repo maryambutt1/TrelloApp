@@ -11,7 +11,7 @@ import { BoardContext } from "../context/BoardContext";
 import AddCard from "./AddCard";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import AddList from "./AddList";
-import { createList, createCard } from "../services/api";
+import { createList, createCard, moveCard } from "../services/api";
 
 export default function Main({ dataFetched }) {
   const { allBoard, setAllBoard } = useContext(BoardContext);
@@ -67,7 +67,7 @@ export default function Main({ dataFetched }) {
     }
   };
 
-  function onDragEnd(result) {
+  const onDragEnd = async (result) => {
     if (!result.destination) {
       return;
     }
@@ -108,10 +108,22 @@ export default function Main({ dataFetched }) {
     const [removed] = sourceItems.splice(source.index, 1);
     destinationItems.splice(destination.index, 0, removed);
 
-    const updatedBoard = { ...allBoard };
-    updatedBoard.boards[updatedBoard.active].list = newList;
-    setAllBoard(updatedBoard);
-  }
+    // Call the API to update the backend
+    try {
+      await moveCard({
+        cardId: removed.id,
+        sourceListId: source.droppableId,
+        destinationListId: destination.droppableId,
+      });
+
+      // Update the frontend state
+      const updatedBoard = { ...allBoard };
+      updatedBoard.boards[updatedBoard.active].list = newList;
+      setAllBoard(updatedBoard);
+    } catch (error) {
+      console.error("Error moving card:", error);
+    }
+  };
 
   const buttons = [
     { name: "Power-ups", icon: <TrendingUp size={16} className="mr-2" /> },

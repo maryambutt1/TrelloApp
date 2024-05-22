@@ -41,4 +41,16 @@ export const fetchBoards = async () => {
     throw error;
   }
 };
+export const moveCard = async ({ cardId, sourceListId, destinationListId }) => {
+  try {
+    const response = await axios.put(`${API_URL}/cards/moveCard`, {
+      cardId,
+      sourceListId,
+      destinationListId,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
