@@ -13,7 +13,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import AddList from "./AddList";
 import { createList, createCard } from "../services/api";
 
-export default function Main() {
+export default function Main({ dataFetched }) {
   const { allBoard, setAllBoard } = useContext(BoardContext);
   const boardData = allBoard.boards[allBoard.active];
 
@@ -29,7 +29,9 @@ export default function Main() {
       const updatedBoardData = { ...boardData };
 
       const updatedList = { ...updatedBoardData.list[listIndex] };
-      updatedList.cards = Array.isArray(updatedList.cards) ? updatedList.cards : [];
+      updatedList.cards = Array.isArray(updatedList.cards)
+        ? updatedList.cards
+        : [];
 
       updatedList.items.push(newCard);
 
@@ -47,7 +49,10 @@ export default function Main() {
 
   const getList = async (list) => {
     try {
-      const createdList = await createList({ title: list, boardId: boardData._id });
+      const createdList = await createList({
+        title: list,
+        boardId: boardData._id,
+      });
       const newList = {
         id: createdList._id,
         title: createdList.title,
@@ -75,7 +80,7 @@ export default function Main() {
 
       const updatedBoard = {
         ...allBoard,
-        boards: allBoard.boards.map((board, i) =>
+        boards: allBoard?.boards?.map((board, i) =>
           i === allBoard.active ? { ...board, list: newListOrder } : board
         ),
       };
@@ -85,7 +90,9 @@ export default function Main() {
 
     const newList = [...allBoard.boards[allBoard.active].list];
     const sourceList = newList.find((list) => list.id === source.droppableId);
-    const destinationList = newList.find((list) => list.id === destination.droppableId);
+    const destinationList = newList.find(
+      (list) => list.id === destination.droppableId
+    );
 
     if (!sourceList || !destinationList) {
       return;
@@ -126,7 +133,7 @@ export default function Main() {
           <b>{boardData.name}</b>
         </h2>
         <div className="flex">
-          {buttons.map((button, index) => (
+          {buttons?.map((button, index) => (
             <div className="flex items-center justify-center" key={index}>
               <button className="h-8 text-white px-2 py-1 mr-2 rounded flex justify-center items-center hover:bg-gray-700">
                 {button.icon}
@@ -139,14 +146,30 @@ export default function Main() {
       <div className="flex flex-col w-full flex-grow relative">
         <div className="absolute mb-1 pb-2 left-0 right-0 top-0 bottom-0 p-3 flex overflow-x-scroll gap-x-3">
           <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="all-lists" direction="horizontal" type="LIST">
+            <Droppable
+              droppableId="all-lists"
+              direction="horizontal"
+              type="LIST"
+            >
               {(provided) => (
-                <div className="flex gap-x-2" {...provided.droppableProps} ref={provided.innerRef}>
-                  {boardData.list && boardData.list.length > 0 ? (
-                    boardData.list.map((list, index) => (
-                      <Draggable key={list.id} draggableId={list.id} index={index}>
+                <div
+                  className="flex gap-x-2"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {boardData?.list && boardData?.list?.length > 0 ? (
+                    boardData?.list?.map((list, index) => (
+                      <Draggable
+                        key={list.id}
+                        draggableId={list.id}
+                        index={index}
+                      >
                         {(provided) => (
-                          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
                             <div className="w-60 h-fit rounded-md p-2 bg-gray-300 flex-shrink-0">
                               <div className="list-body">
                                 <div className="text-black flex justify-between p-1 items-center">
@@ -163,12 +186,18 @@ export default function Main() {
                                       className="py-1"
                                       ref={provided.innerRef}
                                       style={{
-                                        backgroundColor: snapshot.isDraggingOver ? "lightgray" : "transparent",
+                                        backgroundColor: snapshot.isDraggingOver
+                                          ? "lightgray"
+                                          : "transparent",
                                       }}
                                       {...provided.droppableProps}
                                     >
-                                      {list.items.map((item, index) => (
-                                        <Draggable key={item.id} draggableId={item.id} index={index}>
+                                      {list?.items?.map((item, index) => (
+                                        <Draggable
+                                          key={item.id}
+                                          draggableId={item.id}
+                                          index={index}
+                                        >
                                           {(provided) => (
                                             <div
                                               ref={provided.innerRef}
@@ -196,6 +225,7 @@ export default function Main() {
                                     const listId = boardData.list[index].id;
                                     getCard(card, listId, index);
                                   }}
+                                  isDisabled={!dataFetched}
                                 />
                               </div>
                             </div>
@@ -211,7 +241,8 @@ export default function Main() {
               )}
             </Droppable>
           </DragDropContext>
-          <AddList getList={getList} />
+          <AddList getList={getList} isDisabled={!dataFetched} />{" "}
+          {/* Pass isDisabled prop */}
         </div>
       </div>
     </div>

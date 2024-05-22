@@ -3,21 +3,21 @@ import { Plus, X } from "react-feather";
 
 export default function AddCard(props) {
   const [show, setShow] = useState(false);
-  const [card, setCard] = useState('');
+  const [card, setCard] = useState("");
 
   const saveCard = () => {
     if (!card) {
       return;
-    } 
+    }
     props.getCard(card);
     setCard("");
     setShow(!show);
   };
 
-  const close=()=>{
-    setCard('');
+  const close = () => {
+    setCard("");
     setShow(!show);
-  }
+  };
 
   return (
     <div className="">
@@ -25,8 +25,8 @@ export default function AddCard(props) {
         {show && (
           <div>
             <textarea
-            value={card}
-            onChange={(e)=>setCard(e.target.value)}
+              value={card}
+              onChange={(e) => setCard(e.target.value)}
               className="p-1 w-full rounded-lg border-2 bg-gray-100 text-black"
               placeholder="Enter a title for this card..."
               cols="30"
@@ -54,7 +54,12 @@ export default function AddCard(props) {
         {!show && (
           <button
             onClick={() => setShow(!show)}
-            className="flex items-center gap-x-2 hover:bg-gray-400 p-1 rounded w-full h-8 text-black cursor-pointer "
+            className={`flex items-center gap-x-2 hover:bg-gray-400 p-1 rounded w-full h-8 text-black cursor-pointer ${
+              props.isDisabled
+                ? "cursor-not-allowed opacity-50"
+                : "hover:bg-gray-400"
+            }`}
+            disabled={props.isDisabled}
           >
             <Plus size={18}></Plus>
             Add a card

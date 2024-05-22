@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ChevronRight, ChevronLeft, Plus, X } from "react-feather";
 import { Popover } from "react-tiny-popover";
 import { BoardContext } from "../context/BoardContext";
-import { useContext } from "react";
 import { createBoard } from "../services/api";
 
-const Sidebar = () => {
+const Sidebar = ({ setDataFetched }) => {
   const blankBoard = {
     name: "",
     bgcolor: "#FF0000",
@@ -25,34 +24,47 @@ const Sidebar = () => {
   };
   const addBoard = async () => {
     try {
-      console.log('Adding board...');
+      console.log("Adding board...");
       const createdBoard = await createBoard(boardData);
-      console.log('Created board:', createdBoard);
-      setAllBoard(prev => {
-        console.log('Previous allBoard:', prev);
-  
-        const updatedBoards = [...prev.boards, {
-          name: createdBoard.name,
-          bgcolor: createdBoard.bgcolor,
-          list: [],
-          _id: createdBoard._id,
-        }];
-  
+      console.log("Created board:", createdBoard);
+      setAllBoard((prev) => {
+        console.log("Previous allBoard:", prev);
+
+        let updatedBoards = [
+          ...prev.boards,
+          {
+            name: createdBoard.name,
+            bgcolor: createdBoard.bgcolor,
+            list: [],
+            _id: createdBoard._id,
+          },
+        ];
+
+        // Remove the sample board if it's the only one
+        if (
+          prev.boards.length === 1 &&
+          prev.boards[0].name === "Sample Board"
+        ) {
+          updatedBoards = updatedBoards.slice(1);
+        }
+
         const updatedAllBoard = {
           ...prev,
           boards: updatedBoards,
+          active: updatedBoards.length - 1, // Set the active board to the new one
         };
-  
-        console.log('Updated allBoard:', updatedAllBoard);
+
+        console.log("Updated allBoard:", updatedAllBoard);
         return updatedAllBoard;
       });
       setBoarddata(blankBoard);
       setShowpop(false);
+      setDataFetched(true); // Update dataFetched to true after creating a new board
     } catch (error) {
-      console.error('Error creating board:', error);
+      console.error("Error creating board:", error);
     }
   };
-  
+
   return (
     <div
       className={`h-[calc(100vh-3rem)] border border-gray-300 transition-all linear duration-500 flex-shrink-0 ${

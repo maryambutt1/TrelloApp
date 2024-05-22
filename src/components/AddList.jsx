@@ -3,21 +3,21 @@ import { Plus, X } from "react-feather";
 
 export default function AddList(props) {
   const [show, setShow] = useState(false);
-  const [list, setList] = useState('');
+  const [list, setList] = useState("");
 
   const savelist = () => {
     if (!list) {
       return;
-    } 
+    }
     props.getList(list);
     setList("");
     setShow(!show);
   };
 
-  const close=()=>{
-    setList('');
+  const close = () => {
+    setList("");
     setShow(!show);
-  }
+  };
 
   return (
     <div className="">
@@ -25,8 +25,8 @@ export default function AddList(props) {
         {show && (
           <div>
             <textarea
-            value={list}
-            onChange={(e)=>setList(e.target.value)}
+              value={list}
+              onChange={(e) => setList(e.target.value)}
               className="p-1 w-full rounded-lg border-2 bg-gray-100 text-black"
               placeholder="Enter a title for this list..."
               cols="30"
@@ -54,7 +54,12 @@ export default function AddList(props) {
         {!show && (
           <button
             onClick={() => setShow(!show)}
-            className="flex items-center gap-x-2 hover:bg-gray-400 p-1 rounded w-full h-8 text-black cursor-pointer "
+            className={`flex items-center gap-x-2 p-1 rounded w-full h-8 text-black cursor-pointer ${
+              props.isDisabled
+                ? "cursor-not-allowed opacity-50"
+                : "hover:bg-gray-400"
+            }`}
+            disabled={props.isDisabled}
           >
             <Plus size={18}></Plus>
             Add a list
