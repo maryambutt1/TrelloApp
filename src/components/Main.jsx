@@ -19,34 +19,42 @@ export default function Main({ dataFetched }) {
 
   const getCard = async (card, listId, listIndex) => {
     try {
-      const createdCard = await createCard({ title: card, listId });
+      console.log("listid",listId)
+      console.log("card",card)
+      console.log("listIndex",listIndex)
+      const createdCard = await createCard({ title: card, listId: listId });
 
       const newCard = {
         id: createdCard._id,
         title: createdCard.title,
+        listId: listId
       };
-
+      console.log("new card in getcard func", newCard)
       const updatedBoardData = { ...boardData };
-
+      console.log("updatedBoardData in getcard func", updatedBoardData)
       const updatedList = { ...updatedBoardData.list[listIndex] };
-      updatedList.cards = Array.isArray(updatedList.cards)
-        ? updatedList.cards
-        : [];
-
+      console.log("updatedlist in getcard func", updatedList)
+      updatedList.cards = Array.isArray(updatedList.cards) ? updatedList.cards : [];
+      console.log("updatedlist.cards in getcard func", updatedList.cards)
       updatedList.items.push(newCard);
+      console.log("updatedlist.items in getcard func", updatedList.items)
 
       updatedBoardData.list[listIndex] = updatedList;
+      console.log("updatedboarddata in getcard func", updatedBoardData)
 
       setAllBoard((prevAllBoard) => {
         const updatedAllBoard = { ...prevAllBoard };
         updatedAllBoard.boards[prevAllBoard.active] = updatedBoardData;
+        console.log("updatedAllboard in getcard", updatedAllBoard)
         return updatedAllBoard;
       });
     } catch (error) {
       console.error("Error creating card:", error);
     }
   };
-
+  const saveCard = (card, listId, listIndex) => {
+    getCard(card, listId, listIndex);
+  };
   const getList = async (list) => {
     try {
       const createdList = await createList({
@@ -232,13 +240,7 @@ export default function Main({ dataFetched }) {
                                     </div>
                                   )}
                                 </Droppable>
-                                <AddCard
-                                  getCard={(card) => {
-                                    const listId = boardData.list[index].id;
-                                    getCard(card, listId, index);
-                                  }}
-                                  isDisabled={!dataFetched}
-                                />
+                                <AddCard listId={list._id} listIndex={index} saveCard={saveCard} isDisabled={!dataFetched}/>
                               </div>
                             </div>
                           </div>

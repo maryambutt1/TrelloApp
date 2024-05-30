@@ -4,7 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Main from "./components/Main";
 import { BoardContext } from "./context/BoardContext";
 import { useState, useEffect } from "react";
-import { fetchBoards } from "./services/api";
+import { fetchBoards, fetchLists, fetchCards } from "./services/api";
 
 const defaultBoard = {
   active: 0,
@@ -45,7 +45,21 @@ function App() {
       try {
         const boards = await fetchBoards();
         if (boards && boards.length > 0) {
-          setAllBoard({ boards, active: 0 });
+          const boardsWithListsAndCards = await Promise.all(
+            boards.map(async (board) => {
+              const lists = await fetchLists(board._id);
+              const listsWithCards = await Promise.all(
+                lists.map(async (list) => {
+                  const cards = await fetchCards(list._id);
+                  return { ...list, items: cards };
+                })
+              );
+              console.log("Fetched Lists with Cards", listsWithCards); // Add this line
+              return { ...board, list: listsWithCards };
+            })
+          );
+    
+          setAllBoard({ boards: boardsWithListsAndCards, active: 0 });
           setDataFetched(true);
         } else {
           setAllBoard(defaultBoard);
@@ -57,7 +71,6 @@ function App() {
         setDataFetched(false);
       }
     };
-
     initializeBoards();
   }, []);
 

@@ -25,7 +25,9 @@ export const createList = async (listData) => {
 };
 export const createCard = async (cardData) => {
   try {
+    console.log("I'm in createCard service on FE")
     const response = await axios.post(`${API_URL}/cards/create`, cardData);
+    console.log("carddata",cardData)
     return response.data;
   } catch (error) {
     console.error('Error creating card:', error);
@@ -38,6 +40,25 @@ export const fetchBoards = async () => {
     return response.data;
   } catch (error) {
     console.error('Error getting boards:', error);
+    throw error;
+  }
+};
+export const fetchLists = async (boardId) => {
+  try {
+    const response = await axios.get(`${API_URL}/boards/${boardId}/lists`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching lists:", error);
+    throw error;
+  }
+};
+
+export const fetchCards = async (listId) => {
+  try {
+    const response = await axios.get(`${API_URL}/boards/lists/${listId}/cards`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching cards:", error);
     throw error;
   }
 };

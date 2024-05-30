@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { Plus, X } from "react-feather";
 
-export default function AddCard(props) {
+const AddCard = ({ listId, listIndex, saveCard, isDisabled }) => {
   const [show, setShow] = useState(false);
   const [card, setCard] = useState("");
 
-  const saveCard = () => {
+  const handleSave = () => {
     if (!card) {
       return;
     }
-    props.getCard(card);
+    saveCard(card, listId, listIndex);
     setCard("");
     setShow(!show);
   };
-
   const close = () => {
     setCard("");
     setShow(!show);
@@ -36,7 +35,8 @@ export default function AddCard(props) {
             <div className="flex p-1">
               <div className="flex gap-x-2">
                 <button
-                  onClick={() => saveCard()}
+                  onClick={handleSave}
+                  disabled={isDisabled}
                   className="text-white px-2 py-1 rounded items-center hover:bg-blue-700 bg-blue-600"
                 >
                   Add Card
@@ -55,11 +55,11 @@ export default function AddCard(props) {
           <button
             onClick={() => setShow(!show)}
             className={`flex items-center gap-x-2 hover:bg-gray-400 p-1 rounded w-full h-8 text-black cursor-pointer ${
-              props.isDisabled
+              isDisabled
                 ? "cursor-not-allowed opacity-50"
                 : "hover:bg-gray-400"
             }`}
-            disabled={props.isDisabled}
+            disabled={isDisabled}
           >
             <Plus size={18}></Plus>
             Add a card
@@ -69,3 +69,4 @@ export default function AddCard(props) {
     </div>
   );
 }
+export default AddCard;
